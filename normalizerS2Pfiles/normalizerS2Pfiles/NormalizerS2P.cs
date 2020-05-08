@@ -12,20 +12,16 @@ namespace normalizerS2Pfiles
 	class NormalizerS2P
 	{
 		private string[] _source;
-		private string[] _result;
 
 		private string[] _sampleStrings;
 
-		private string[] _commentStrings;
-		
 		private string _formatString;
 		private string _freqUntil;
 		private string _dataUntil;
 
 		private Sample[] _samples;
 
-
-		public string[] Normalize(string[] source)
+		public NormalizerS2P(string[] source)
 		{
 			_source = source;
 
@@ -34,13 +30,45 @@ namespace normalizerS2Pfiles
 
 			GetSamplesStrings();
 			ParseSample();
+
 			ConvertFreqToHz();
 			ConvertDataTodB();
+		}
 
-			GetCommentStrings();
-			GenerateResult();
-			
-			return _result;
+		public string[] GetNormalizedS2P()
+		{
+			string[] commentStrings = _source.Where(t => t.StartsWith("!")).ToArray();
+
+			string[] result = new string[1 + commentStrings.Length + 1 + _samples.Length];
+			int i = 0;
+
+			result[i] = "! This file was normalized.";
+			i++;
+
+			foreach (var item in commentStrings)
+			{
+				result[i] = item;
+				i++;
+			}
+
+			result[i] = "# Hz S dB R 50";
+			i++;
+
+			foreach (var item in _samples)
+			{
+				result[i] = item.Freq.ToString() + "\t" +
+					item.S11MagOrRe.ToString("E") + "\t" +
+					item.S11AngOrIm.ToString("E") + "\t" +
+					item.S12MagOrRe.ToString("E") + "\t" +
+					item.S12AngOrIm.ToString("E") + "\t" +
+					item.S21MagOrRe.ToString("E") + "\t" +
+					item.S21AngOrIm.ToString("E") + "\t" +
+					item.S22MagOrRe.ToString("E") + "\t" +
+					item.S22AngOrIm.ToString("E");
+				i++;
+			}
+
+			return result;
 		}
 
 		private void GetFormatString()
@@ -65,10 +93,6 @@ namespace normalizerS2Pfiles
 			_sampleStrings = _source.Where(t => !t.StartsWith("!") && !t.StartsWith("#")).ToArray();
 		}
 
-		private void GetCommentStrings()
-		{
-			_commentStrings = _source.Where(t => t.StartsWith("!")).ToArray();
-		}
 		private void ParseSample()
 		{
 			_samples = new Sample[_sampleStrings.Length];
@@ -175,33 +199,6 @@ namespace normalizerS2Pfiles
 			}
 		}
 
-		private void GenerateResult()
-		{
-			_result = new string[1 + _commentStrings.Length + 1 + _samples.Length];
-			int i = 0;
-			_result[i] = "! This file was normalized.";
-			i++;
-			foreach (var item in _commentStrings)
-			{
-				_result[i] = item;
-				i++;
-			}
-			_result[i] = "# Hz S dB R 50";
-			i++;
-			foreach (var item in _samples)
-			{
-				_result[i] = item.Freq.ToString() + "\t" +
-					item.S11MagOrRe.ToString("E") + "\t" +
-					item.S11AngOrIm.ToString("E") + "\t" +
-					item.S12MagOrRe.ToString("E") + "\t" +
-					item.S12AngOrIm.ToString("E") + "\t" +
-					item.S21MagOrRe.ToString("E") + "\t" +
-					item.S21AngOrIm.ToString("E") + "\t" +
-					item.S22MagOrRe.ToString("E") + "\t" +
-					item.S22AngOrIm.ToString("E");
-				i++;
-			}
-		}
 	}
 
 	struct Sample
