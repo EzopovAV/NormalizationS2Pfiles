@@ -16,11 +16,12 @@ namespace normalizerS2Pfiles
 
 			string[] Source = File.ReadAllLines(pathSource);
 
-			NormalizerS2Pfiles x = new NormalizerS2Pfiles();
+			NormalizerS2P x = new NormalizerS2P();
 
 			string[] Result = x.Normalize(Source);
 
 			File.WriteAllLines(pathResult, Result);
+			Console.ReadLine();
 		}
 	}
 }
