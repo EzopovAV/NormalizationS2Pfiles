@@ -35,6 +35,37 @@ namespace normalizerS2Pfiles
 			ConvertDataTodB();
 		}
 
+		/// <summary>
+		/// Return all samples normalized to format # Hz S dB R 50
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerable<Sample> GetSamples()
+		{
+			return _samples;
+		}
+
+		/// <summary>
+		/// Return first N or less samles normalized to format # Hz S dB R 50
+		/// </summary>
+		/// <param name="limit"></param>
+		/// <returns></returns>
+		public IEnumerable<Sample> GetSamples(int limit)
+		{
+			for (int i = 0; i < limit; i++)
+			{
+				if (i == _samples.Length)
+				{
+					yield break;
+				}
+
+				yield return _samples[i];
+			}
+		}
+
+		/// <summary>
+		/// Return all data normalized to format # Hz S dB R 50
+		/// </summary>
+		/// <returns></returns>
 		public string[] GetNormalizedS2P()
 		{
 			string[] commentStrings = _source.Where(t => t.StartsWith("!")).ToArray();
@@ -158,7 +189,6 @@ namespace normalizerS2Pfiles
 				case "GHZ":
 					ConvertFreq(t => t * 1E9);
 					break;
-
 			}
 
 			void ConvertFreq(Func<double, double> func)
@@ -206,10 +236,8 @@ namespace normalizerS2Pfiles
 						_samples[i].S22AngOrIm = 180 * Math.Atan2(sample.S22AngOrIm, sample.S22MagOrRe) / Math.PI;
 					}
 					break;
-
 			}
 		}
-
 	}
 
 	struct Sample
