@@ -11,7 +11,7 @@ namespace normalizerS2Pfiles
 {
 	class NormalizerS2P
 	{
-		private string[] _source;
+		private readonly string[] _source;
 
 		private string[] _sampleStrings;
 
@@ -74,18 +74,35 @@ namespace normalizerS2Pfiles
 		private void GetFormatString()
 		{
 			int i = 0;
-			while (i != _source.Length && _source[i].First() != '#')
+			while (_source[i].First() != '#')
 			{
 				i++;
+				if (i == _source.Length)
+				{
+					throw new Exception("No data format string was found.");
+				}
 			}
 			_formatString = _source[i];
 		}
 
 		private void GetUntil()
 		{
+			string[] validFrequencyUnits = new string[] { "HZ", "KHZ", "MHZ", "GHZ" };
+			string[] validDataUnits = new string[] { "DB", "MA", "RI" };
+
 			string[] s = _formatString.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-			_freqUntil = s[1];
-			_dataUntil = s[3];
+
+			_freqUntil = s[1].ToUpper();
+			if (!validFrequencyUnits.Contains(_freqUntil))
+			{
+				throw new Exception("Invalid frequency units.");
+			}
+
+			_dataUntil = s[3].ToUpper();
+			if (!validDataUnits.Contains(_dataUntil))
+			{
+				throw new Exception("Invalid data units.");
+			}
 		}
 
 		private void GetSamplesStrings()
@@ -118,16 +135,14 @@ namespace normalizerS2Pfiles
 				}
 				catch (Exception)
 				{
-
-					throw;
+					throw new Exception("Invalid data.");
 				}
-				//Console.WriteLine(_samples[i].Freq + "\t" + _samples[i].S11MagOrRe);
 			}
 		}
 
 		private void ConvertFreqToHz()
 		{
-			switch (_freqUntil.ToUpper())
+			switch (_freqUntil)
 			{
 				case "HZ":
 					break;
@@ -144,8 +159,6 @@ namespace normalizerS2Pfiles
 					ConvertFreq(t => t * 1E9);
 					break;
 
-				default:
-					break;
 			}
 
 			void ConvertFreq(Func<double, double> func)
@@ -159,7 +172,7 @@ namespace normalizerS2Pfiles
 
 		private void ConvertDataTodB()
 		{
-			switch (_dataUntil.ToUpper())
+			switch (_dataUntil)
 			{
 				case "DB":
 					break;
@@ -194,8 +207,6 @@ namespace normalizerS2Pfiles
 					}
 					break;
 
-				default:
-					break;
 			}
 		}
 
