@@ -151,7 +151,7 @@ namespace normalizerS2Pfiles
 				Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
 
 				sampleString = _sampleStrings[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-				Double.TryParse(sampleString[0], out _samples[i].Freq);
+
 				try
 				{
 					_samples[i].Freq = Double.Parse(sampleString[0]);
@@ -179,15 +179,15 @@ namespace normalizerS2Pfiles
 					break;
 
 				case "KHZ":
-					ConvertFreq(t => t * 1E3);
+					ConvertFreq(f => f * 1E3);
 					break;
 
 				case "MHZ":
-					ConvertFreq(t => t * 1E6);
+					ConvertFreq(f => f * 1E6);
 					break;
 
 				case "GHZ":
-					ConvertFreq(t => t * 1E9);
+					ConvertFreq(f => f * 1E9);
 					break;
 			}
 
