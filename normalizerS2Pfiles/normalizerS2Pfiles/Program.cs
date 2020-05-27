@@ -11,6 +11,8 @@ namespace normalizerS2Pfiles
 	{
 		static void Main(string[] args)
 		{
+			// REVIEW: Let's use relative paths
+			// ALso will be good to commit files
 			string pathSource = @"C:\petProjects\s2p files\E5071B GPPM-_Chanel-1_Rx_ATTen-0_PHase-2.s2p";
 			string pathResult = @"C:\petProjects\s2p files\E5071B GPPM-_Chanel-1_Rx_ATTen-0_PHase-2_nomalized.s2p";
 			pathSource = @"C:\petProjects\s2p files\ADS_Re.s2p";

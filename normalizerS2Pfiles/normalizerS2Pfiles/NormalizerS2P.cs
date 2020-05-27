@@ -23,14 +23,23 @@ namespace normalizerS2Pfiles
 
 		public NormalizerS2P(string[] source)
 		{
+			// REVIEW: It would be better not to do calculations in ctor
+			// https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/constructor
 			_source = source;
 
+			// REVIEW: Do you init _formatString here? How I can understand it without going into the method?
 			GetFormatString();
+
+			// REVIEW: What does "Get Until" mean?
 			GetUntil();
 
+			// REVIEW: Do you init _sampleStrings here? How I can understand it without going into the method?
 			GetSamplesStrings();
+
+			// REVIEW: TBD
 			ParseSample();
 
+			// REVIEW: You are updating initial data. It is not a convertation
 			ConvertFreqToHz();
 			ConvertDataTodB();
 		}
@@ -179,6 +188,7 @@ namespace normalizerS2Pfiles
 					break;
 
 				case "KHZ":
+					// REVIEW: Magic numbers
 					ConvertFreq(f => f * 1E3);
 					break;
 
@@ -210,6 +220,7 @@ namespace normalizerS2Pfiles
 				case "MA":
 					for (int i = 0; i < _samples.Length; i++)
 					{
+						// REVIEW: Can we get rid of big amount of copy-paste somehow?
 						_samples[i].S11MagOrRe = 10 * Math.Log10(_samples[i].S11MagOrRe);
 						_samples[i].S12MagOrRe = 10 * Math.Log10(_samples[i].S12MagOrRe);
 						_samples[i].S21MagOrRe = 10 * Math.Log10(_samples[i].S21MagOrRe);
@@ -222,7 +233,7 @@ namespace normalizerS2Pfiles
 					for (int i = 0; i < _samples.Length; i++)
 					{
 						sample = _samples[i];
-
+						// REVIEW: Can we get rid of big amount of copy-paste somehow?
 						_samples[i].S11MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S11MagOrRe, 2) + Math.Pow(sample.S11AngOrIm, 2)));
 						_samples[i].S11AngOrIm = 180 * Math.Atan2(sample.S11AngOrIm, sample.S11MagOrRe) / Math.PI;
 
@@ -240,6 +251,7 @@ namespace normalizerS2Pfiles
 		}
 	}
 
+	// REVIEW: can be moved to separate file - minor
 	struct Sample
 	{
 		public double Freq;
