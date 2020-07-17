@@ -11,10 +11,10 @@ namespace normalizerS2Pfiles
 	{
 		static void Main(string[] args)
 		{
-			string pathSource = @"C:\petProjects\s2p files\E5071B GPPM-_Chanel-1_Rx_ATTen-0_PHase-2.s2p";
-			string pathResult = @"C:\petProjects\s2p files\E5071B GPPM-_Chanel-1_Rx_ATTen-0_PHase-2_nomalized.s2p";
-			pathSource = @"C:\petProjects\s2p files\ADS_Re.s2p";
-			pathResult = @"C:\petProjects\s2p files\ADS_Re.s2p_nomalized.s2p";
+			string pathSource = @"..\..\..\s2p files\E5071B GPPM-_Chanel-1_Rx_ATTen-0_PHase-2.s2p";
+			string pathResult = @"..\..\..\s2p files\E5071B GPPM-_Chanel-1_Rx_ATTen-0_PHase-2_nomalized.s2p";
+			pathSource = @"..\..\..\s2p files\ADS_Re.s2p";
+			pathResult = @"..\..\..\s2p files\ADS_Re.s2p_nomalized.s2p";
 
 			string[] Source = File.ReadAllLines(pathSource);
 
@@ -23,6 +23,8 @@ namespace normalizerS2Pfiles
 			string[] Result = x.GetNormalizedS2P();
 
 			File.WriteAllLines(pathResult, Result);
+			Console.WriteLine(pathResult);
+			Console.WriteLine(Result[0]);
 			Console.ReadLine();
 		}
 	}
