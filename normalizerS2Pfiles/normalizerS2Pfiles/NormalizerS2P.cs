@@ -12,27 +12,28 @@ namespace normalizerS2Pfiles
 	class NormalizerS2P
 	{
 		private readonly string[] _source;
+		private readonly string[] _sampleStrings;
 
-		private string[] _sampleStrings;
-
-		private string _formatString;
-		private string _freqUntil;
-		private string _dataUntil;
+		private readonly string _formatString;
+		private readonly string _freqUnit;
+		private readonly string _dataUnit;
 
 		private Sample[] _samples;
 
 		public NormalizerS2P(string[] source)
 		{
-			_source = source;
+			_source = source ?? throw new ArgumentNullException(nameof(source));
 
-			GetFormatString();
-			GetUntil();
+			_formatString = GetFormatString(_source);
 
-			GetSamplesStrings();
-			ParseSample();
+			_freqUnit = GetFreqUnit(_formatString);
+			_dataUnit = GetDataUnit(_formatString);
 
-			ConvertFreqToHz();
-			ConvertDataTodB();
+			_sampleStrings = GetSamplesStrings(_source);
+			_samples = ParseSample(_sampleStrings);
+
+			_samples = ConvertFreqToHz(_freqUnit, _samples);
+			_samples = ConvertDataTodB(_dataUnit, _samples);
 		}
 
 		/// <summary>
@@ -102,141 +103,155 @@ namespace normalizerS2Pfiles
 			return result;
 		}
 
-		private void GetFormatString()
+		private string GetFormatString(string[] source)
 		{
 			int i = 0;
-			while (_source[i].First() != '#')
+			while (source[i].First() != '#')
 			{
 				i++;
-				if (i == _source.Length)
+				if (i == source.Length)
 				{
 					throw new Exception("No data format string was found.");
 				}
 			}
-			_formatString = _source[i];
+			var formatString = source[i];
+			return formatString;
 		}
 
-		private void GetUntil()
+		private string GetFreqUnit(string formatString)
 		{
 			string[] validFrequencyUnits = new string[] { "HZ", "KHZ", "MHZ", "GHZ" };
-			string[] validDataUnits = new string[] { "DB", "MA", "RI" };
-
-			string[] s = _formatString.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-			_freqUntil = s[1].ToUpper();
-			if (!validFrequencyUnits.Contains(_freqUntil))
+			string[] s = formatString.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+			var freqUnit = s[1].ToUpper();
+			if (!validFrequencyUnits.Contains(freqUnit))
 			{
 				throw new Exception("Invalid frequency units.");
 			}
+			return freqUnit;
+		}
 
-			_dataUntil = s[3].ToUpper();
-			if (!validDataUnits.Contains(_dataUntil))
+		private string GetDataUnit(string formatString)
+		{
+			string[] validDataUnits = new string[] { "DB", "MA", "RI" };
+			string[] s = formatString.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+			var dataUnit = s[3].ToUpper();
+			if (!validDataUnits.Contains(dataUnit))
 			{
 				throw new Exception("Invalid data units.");
 			}
+			return dataUnit;
 		}
 
-		private void GetSamplesStrings()
+		private string[] GetSamplesStrings(string[] source)
 		{
-			_sampleStrings = _source.Where(t => !t.StartsWith("!") && !t.StartsWith("#")).ToArray();
+			return source.Where(t => !t.StartsWith("!") && !t.StartsWith("#")).ToArray();
 		}
 
-		private void ParseSample()
+		private Sample[] ParseSample(string[] sampleStrings)
 		{
-			_samples = new Sample[_sampleStrings.Length];
+			var samples = new Sample[sampleStrings.Length];
 
 			string[] sampleString;
-			for (int i = 0; i < _samples.Length; i++)
+			for (int i = 0; i < samples.Length; i++)
 			{
 				Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
 
-				sampleString = _sampleStrings[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+				sampleString = sampleStrings[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
 				try
 				{
-					_samples[i].Freq = Double.Parse(sampleString[0]);
-					_samples[i].S11MagOrRe = Double.Parse(sampleString[1]);
-					_samples[i].S11AngOrIm = Double.Parse(sampleString[2]);
-					_samples[i].S12MagOrRe = Double.Parse(sampleString[3]);
-					_samples[i].S12AngOrIm = Double.Parse(sampleString[4]);
-					_samples[i].S21MagOrRe = Double.Parse(sampleString[5]);
-					_samples[i].S21AngOrIm = Double.Parse(sampleString[6]);
-					_samples[i].S22MagOrRe = Double.Parse(sampleString[7]);
-					_samples[i].S22AngOrIm = Double.Parse(sampleString[8]);
+					samples[i].Freq = Double.Parse(sampleString[0]);
+					samples[i].S11MagOrRe = Double.Parse(sampleString[1]);
+					samples[i].S11AngOrIm = Double.Parse(sampleString[2]);
+					samples[i].S12MagOrRe = Double.Parse(sampleString[3]);
+					samples[i].S12AngOrIm = Double.Parse(sampleString[4]);
+					samples[i].S21MagOrRe = Double.Parse(sampleString[5]);
+					samples[i].S21AngOrIm = Double.Parse(sampleString[6]);
+					samples[i].S22MagOrRe = Double.Parse(sampleString[7]);
+					samples[i].S22AngOrIm = Double.Parse(sampleString[8]);
 				}
 				catch (Exception)
 				{
 					throw new Exception("Invalid data.");
 				}
 			}
+
+			return samples;
 		}
 
-		private void ConvertFreqToHz()
+		private Sample[] ConvertFreqToHz(string freqUnit, Sample[] samples)
 		{
-			switch (_freqUntil)
+			Func<double, double> func = f => f;
+
+			switch (freqUnit)
 			{
 				case "HZ":
-					break;
+					return samples;
 
 				case "KHZ":
-					ConvertFreq(f => f * 1E3);
+					func = f => f * 1E3;
 					break;
 
 				case "MHZ":
-					ConvertFreq(f => f * 1E6);
+					func = f => f * 1E6;
 					break;
 
 				case "GHZ":
-					ConvertFreq(f => f * 1E9);
+					func = f => f * 1E9;
 					break;
 			}
-
-			void ConvertFreq(Func<double, double> func)
-			{
-				for (int i = 0; i < _samples.Length; i++)
-				{
-					_samples[i].Freq = func(_samples[i].Freq);
-				}
-			}
+			
+			return ConvertFreq(samples, func);
 		}
 
-		private void ConvertDataTodB()
+		private Sample[] ConvertFreq(Sample[] samples, Func<double, double> func)
 		{
-			switch (_dataUntil)
+			for (int i = 0; i < samples.Length; i++)
+			{
+				samples[i].Freq = func(samples[i].Freq);
+			}
+			return samples;
+		}
+
+		private Sample[] ConvertDataTodB(string dataUnit, Sample[] samples)
+		{
+			switch (dataUnit)
 			{
 				case "DB":
 					break;
 
 				case "MA":
-					for (int i = 0; i < _samples.Length; i++)
+					for (int i = 0; i < samples.Length; i++)
 					{
-						_samples[i].S11MagOrRe = 10 * Math.Log10(_samples[i].S11MagOrRe);
-						_samples[i].S12MagOrRe = 10 * Math.Log10(_samples[i].S12MagOrRe);
-						_samples[i].S21MagOrRe = 10 * Math.Log10(_samples[i].S21MagOrRe);
-						_samples[i].S22MagOrRe = 10 * Math.Log10(_samples[i].S22MagOrRe);
+						samples[i].S11MagOrRe = 10 * Math.Log10(_samples[i].S11MagOrRe);
+						samples[i].S12MagOrRe = 10 * Math.Log10(_samples[i].S12MagOrRe);
+						samples[i].S21MagOrRe = 10 * Math.Log10(_samples[i].S21MagOrRe);
+						samples[i].S22MagOrRe = 10 * Math.Log10(_samples[i].S22MagOrRe);
 					}
 					break;
 
 				case "RI":
 					Sample sample = new Sample();
-					for (int i = 0; i < _samples.Length; i++)
+					for (int i = 0; i < samples.Length; i++)
 					{
-						sample = _samples[i];
+						sample = samples[i];
 
-						_samples[i].S11MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S11MagOrRe, 2) + Math.Pow(sample.S11AngOrIm, 2)));
-						_samples[i].S11AngOrIm = 180 * Math.Atan2(sample.S11AngOrIm, sample.S11MagOrRe) / Math.PI;
+						samples[i].S11MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S11MagOrRe, 2) + Math.Pow(sample.S11AngOrIm, 2)));
+						samples[i].S11AngOrIm = 180 * Math.Atan2(sample.S11AngOrIm, sample.S11MagOrRe) / Math.PI;
 
-						_samples[i].S12MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S12MagOrRe, 2) + Math.Pow(sample.S12AngOrIm, 2)));
-						_samples[i].S12AngOrIm = 180 * Math.Atan2(sample.S12AngOrIm, sample.S12MagOrRe) / Math.PI;
+						samples[i].S12MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S12MagOrRe, 2) + Math.Pow(sample.S12AngOrIm, 2)));
+						samples[i].S12AngOrIm = 180 * Math.Atan2(sample.S12AngOrIm, sample.S12MagOrRe) / Math.PI;
 
-						_samples[i].S21MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S21MagOrRe, 2) + Math.Pow(sample.S21AngOrIm, 2)));
-						_samples[i].S21AngOrIm = 180 * Math.Atan2(sample.S21AngOrIm, sample.S21MagOrRe) / Math.PI;
+						samples[i].S21MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S21MagOrRe, 2) + Math.Pow(sample.S21AngOrIm, 2)));
+						samples[i].S21AngOrIm = 180 * Math.Atan2(sample.S21AngOrIm, sample.S21MagOrRe) / Math.PI;
 
-						_samples[i].S22MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S22MagOrRe, 2) + Math.Pow(sample.S22AngOrIm, 2)));
-						_samples[i].S22AngOrIm = 180 * Math.Atan2(sample.S22AngOrIm, sample.S22MagOrRe) / Math.PI;
+						samples[i].S22MagOrRe = 10 * Math.Log10(Math.Sqrt(Math.Pow(sample.S22MagOrRe, 2) + Math.Pow(sample.S22AngOrIm, 2)));
+						samples[i].S22AngOrIm = 180 * Math.Atan2(sample.S22AngOrIm, sample.S22MagOrRe) / Math.PI;
 					}
 					break;
 			}
+
+			return samples;
 		}
 	}
 
