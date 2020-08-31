@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace normalizerS2Pfiles
+﻿namespace normalizerS2Pfiles
 {
-	struct Sample
+	public struct Sample
 	{
 		public double Freq;
 		public double S11MagOrRe;
