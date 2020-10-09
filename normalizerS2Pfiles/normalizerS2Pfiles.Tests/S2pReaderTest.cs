@@ -14,7 +14,7 @@ namespace normalizerS2Pfiles.Tests
     public class S2pReaderTest
     {
         private IS2pReader _s2PReader;
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -23,10 +23,12 @@ namespace normalizerS2Pfiles.Tests
 
         [Test]
         [TestCase(new string[] { "# Hz S dB R 50", }, DataUnits.DB, FrequencyUnits.Hz)]
+        [TestCase(new string[] { "# Hz S dB R 50", "", }, DataUnits.DB, FrequencyUnits.Hz)]
+        [TestCase(new string[] { "", "# Hz S dB R 50", }, DataUnits.DB, FrequencyUnits.Hz)]
         [TestCase(new string[] { "# MHz S MA R 50", }, DataUnits.MA, FrequencyUnits.MHz)]
         [TestCase(new string[] { "# GHz S RI R 50", }, DataUnits.RI, FrequencyUnits.GHz)]
 
-        [TestCase(new string[] 
+        [TestCase(new string[]
             {
                 "!Agilent Technologies,E5071B,MY42404614,A.06.51",
                 "!Date: Thu Jul 31 15:18:06 2014",
@@ -97,9 +99,26 @@ namespace normalizerS2Pfiles.Tests
 
         public void GetFormatTest(string[] source, DataUnits dataUnits, FrequencyUnits frequencyUnits)
         {
-            S2pFormat expectedFormat = new S2pFormat { DataUnits = dataUnits, FrequencyUnits = frequencyUnits};
+            S2pFormat expectedFormat = new S2pFormat { DataUnits = dataUnits, FrequencyUnits = frequencyUnits };
             S2pFormat actualFormat = _s2PReader.GetFormat(source);
             Assert.AreEqual(expectedFormat, actualFormat);
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase("# THz S dB R 50")]
+        [TestCase("! Hz S dB R 50")]
+        [TestCase("# Hz S Volt R 50")]
+        public void GetFormatExceptionTest(string formatString)
+        {
+            string[] source = new string[] { formatString, };
+            Assert.Throws<Exception>(() => _s2PReader.GetFormat(source));
+        }
+
+        [Test]
+        public void GetFormatSourceNullTest()
+        {
+            Assert.Throws<NullReferenceException>(() => _s2PReader.GetFormat(null));
         }
     }
 }
