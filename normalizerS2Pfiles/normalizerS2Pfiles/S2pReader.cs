@@ -21,7 +21,7 @@ namespace normalizerS2Pfiles
 		private string GetFormatString(string[] source)
 		{
 			int i = 0;
-			while (source[i].First() != '#')
+			while (source[i].FirstOrDefault() != '#')
 			{
 				i++;
 				if (i == source.Length)
