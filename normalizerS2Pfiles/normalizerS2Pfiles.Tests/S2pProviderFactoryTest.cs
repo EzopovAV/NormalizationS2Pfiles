@@ -21,27 +21,29 @@ namespace normalizerS2Pfiles.Tests
 		}
 
 		[Test]
-		[TestCase(DataUnits.DB, FrequencyUnits.Hz, typeof(DbS2pProvider))]
-		[TestCase(DataUnits.DB, FrequencyUnits.kHz, typeof(DbS2pProvider))]
-		[TestCase(DataUnits.DB, FrequencyUnits.MHz, typeof(DbS2pProvider))]
-		[TestCase(DataUnits.DB, FrequencyUnits.GHz, typeof(DbS2pProvider))]
+		[TestCase(DataUnits.DB, typeof(DbS2pProvider))]
+		[TestCase(DataUnits.MA, typeof(MaS2pProvider))]
+		[TestCase(DataUnits.RI, typeof(RiS2pProvider))]
 
-		[TestCase(DataUnits.MA, FrequencyUnits.Hz, typeof(MaS2pProvider))]
-		[TestCase(DataUnits.MA, FrequencyUnits.kHz, typeof(MaS2pProvider))]
-		[TestCase(DataUnits.MA, FrequencyUnits.MHz, typeof(MaS2pProvider))]
-		[TestCase(DataUnits.MA, FrequencyUnits.GHz, typeof(MaS2pProvider))]
-
-		[TestCase(DataUnits.RI, FrequencyUnits.Hz, typeof(RiS2pProvider))]
-		[TestCase(DataUnits.RI, FrequencyUnits.kHz, typeof(RiS2pProvider))]
-		[TestCase(DataUnits.RI, FrequencyUnits.MHz, typeof(RiS2pProvider))]
-		[TestCase(DataUnits.RI, FrequencyUnits.GHz, typeof(RiS2pProvider))]
-		public void GetS2pProviderTest(DataUnits dataUnits, FrequencyUnits frequencyUnits, Type expectedTypeProvider)
+		public void GetS2pProviderTest(DataUnits dataUnits, Type expectedTypeProvider)
 		{
-			var s2pFormat = new S2pFormat { DataUnits = dataUnits, FrequencyUnits = frequencyUnits };
+			var s2pFormat = new S2pFormat { DataUnits = dataUnits };
 			var actualProvider = _s2pProviderFactory.GetS2pProvider(s2pFormat);
 			Assert.AreEqual(expectedTypeProvider, actualProvider.GetType());
 		}
 
+		[Test]
+		public void GetS2pProviderUnsupportedDataFormatTest()
+		{
+			var s2pFormat = new S2pFormat();
+			s2pFormat.DataUnits = (DataUnits)int.MaxValue;
+			Assert.Throws<Exception>(() => _s2pProviderFactory.GetS2pProvider(s2pFormat));
+		}
 
+		[Test]
+		public void GetS2pProviderNullTest()
+		{
+			Assert.Throws<NullReferenceException>(() => _s2pProviderFactory.GetS2pProvider(null));
+		}
 	}
 }
