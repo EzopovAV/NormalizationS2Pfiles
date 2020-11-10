@@ -14,10 +14,10 @@ namespace normalizerS2Pfiles
 		{
 			for (int i = 0; i < samples.Length; i++)
 			{
-				samples[i].S11MagOrRe = 10 * Math.Log10(samples[i].S11MagOrRe);
-				samples[i].S12MagOrRe = 10 * Math.Log10(samples[i].S12MagOrRe);
-				samples[i].S21MagOrRe = 10 * Math.Log10(samples[i].S21MagOrRe);
-				samples[i].S22MagOrRe = 10 * Math.Log10(samples[i].S22MagOrRe);
+				samples[i].S11MagOrRe = 20 * Math.Log10(samples[i].S11MagOrRe);
+				samples[i].S12MagOrRe = 20 * Math.Log10(samples[i].S12MagOrRe);
+				samples[i].S21MagOrRe = 20 * Math.Log10(samples[i].S21MagOrRe);
+				samples[i].S22MagOrRe = 20 * Math.Log10(samples[i].S22MagOrRe);
 			}
 
 			return samples;
