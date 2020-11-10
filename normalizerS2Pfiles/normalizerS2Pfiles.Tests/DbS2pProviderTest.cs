@@ -36,10 +36,12 @@ namespace normalizerS2Pfiles.Tests
 				"4010000000	-3.437424e+001	-8.516895e+001	-1.382003e-001	-1.922543e-002	-1.625682e-001	3.758700e-001	-3.353100e+001	-4.565454e+001",
 				"4020000000	-3.581990e+001	-9.721659e+001	-1.931483e-001	1.249728e-001	-2.302538e-001	4.075333e-001	-3.387632e+001	-5.555784e+001",
 			});
-			
+
+			double e = 0.001;
+
 			for (int i = 0; i < 3; i++)
 			{
-				Assert.AreEqual(expectedResult.Skip(i).First().Freq, actualResult.Skip(i).First().Freq);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().Freq - actualResult.Skip(i).First().Freq) < e);
 			}
 		}
 
@@ -67,9 +69,11 @@ namespace normalizerS2Pfiles.Tests
 				"4020000	-3.581990e+001	-9.721659e+001	-1.931483e-001	1.249728e-001	-2.302538e-001	4.075333e-001	-3.387632e+001	-5.555784e+001",
 			});
 
+			double e = 0.001;
+
 			for (int i = 0; i < 3; i++)
 			{
-				Assert.AreEqual(expectedResult.Skip(i).First().Freq, actualResult.Skip(i).First().Freq);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().Freq - actualResult.Skip(i).First().Freq) < e);
 			}
 		}
 
@@ -97,9 +101,11 @@ namespace normalizerS2Pfiles.Tests
 				"4020	-3.581990e+001	-9.721659e+001	-1.931483e-001	1.249728e-001	-2.302538e-001	4.075333e-001	-3.387632e+001	-5.555784e+001",
 			});
 
+			double e = 0.001;
+
 			for (int i = 0; i < 3; i++)
 			{
-				Assert.AreEqual(expectedResult.Skip(i).First().Freq, actualResult.Skip(i).First().Freq);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().Freq - actualResult.Skip(i).First().Freq) < e);
 			}
 		}
 
@@ -127,16 +133,18 @@ namespace normalizerS2Pfiles.Tests
 				"4.020	-3.581990e+001	-9.721659e+001	-1.931483e-001	1.249728e-001	-2.302538e-001	4.075333e-001	-3.387632e+001	-5.555784e+001",
 			});
 
+			double e = 0.001;
+
 			for (int i = 0; i < 3; i++)
 			{
-				Assert.AreEqual(expectedResult.Skip(i).First().Freq, actualResult.Skip(i).First().Freq);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().Freq - actualResult.Skip(i).First().Freq) < e);
 			}
 		}
 
 		[Test]
 		public void GetSamplesDbTest()
 		{
-			var dbS2pProvider = new DbS2pProvider(FrequencyUnits.GHz);
+			var s2pProvider = new DbS2pProvider(FrequencyUnits.GHz);
 
 			IEnumerable<Sample> expectedResult = new Sample[]
 			{
@@ -159,7 +167,7 @@ namespace normalizerS2Pfiles.Tests
 				S22MagOrRe = -45.9995, S22AngOrIm = 177.616 }
 			};
 
-			var actualResult = dbS2pProvider.GetSamples(new string[]
+			var actualResult = s2pProvider.GetSamples(new string[]
 			{
 				"# GHZ S DB R 50",
 				"5                       -45.9374         175.958         -0.07453         87.0624       -0.0745398         87.0624         -45.9342         178.669  ",
@@ -167,43 +175,26 @@ namespace normalizerS2Pfiles.Tests
 				"5.02                    -46.0029         174.865       -0.0746467         85.9702       -0.0746565         85.9702         -45.9995         177.616  ",
 			});
 
-			for (int i = 0; i < 3; i++)
-			{
-				Assert.AreEqual(expectedResult.Skip(i).First(), actualResult.Skip(i).First());
-			}
-		}
-
-		[Test]
-		public void GetNormalizedS2PDbTest()
-		{
-			var dbS2pProvider = new DbS2pProvider(FrequencyUnits.GHz);
-
-			var expectedResult = new string[]
-			{
-				"# GHZ S DB R 50",
-				"5                       -45.9374         175.958         -0.07453         87.0624       -0.0745398         87.0624         -45.9342         178.669  ",
-				"5.01                    -45.9691         175.411       -0.0745855         86.5163       -0.0745953         86.5163         -45.9658         178.142  ",
-				"5.02                    -46.0029         174.865       -0.0746467         85.9702       -0.0746565         85.9702         -45.9995         177.616  ",
-			};
-
-			var actualResult = dbS2pProvider.GetNormalizedS2P(new string[]
-			{
-				"# GHZ S DB R 50",
-				"5                       -45.9374         175.958         -0.07453         87.0624       -0.0745398         87.0624         -45.9342         178.669  ",
-				"5.01                    -45.9691         175.411       -0.0745855         86.5163       -0.0745953         86.5163         -45.9658         178.142  ",
-				"5.02                    -46.0029         174.865       -0.0746467         85.9702       -0.0746565         85.9702         -45.9995         177.616  ",
-			});
+			double e = 0.001;
 
 			for (int i = 0; i < 3; i++)
 			{
-				Assert.AreEqual(expectedResult.Skip(i).First(), actualResult.Skip(i).First());
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().Freq - actualResult.Skip(i).First().Freq) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S11MagOrRe - actualResult.Skip(i).First().S11MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S11AngOrIm - actualResult.Skip(i).First().S11AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S12MagOrRe - actualResult.Skip(i).First().S12MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S12AngOrIm - actualResult.Skip(i).First().S12AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S21MagOrRe - actualResult.Skip(i).First().S21MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S21AngOrIm - actualResult.Skip(i).First().S21AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S22MagOrRe - actualResult.Skip(i).First().S22MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S22AngOrIm - actualResult.Skip(i).First().S22AngOrIm) < e);
 			}
 		}
 
 		[Test]
 		public void GetSamplesMaTest()
 		{
-			var dbS2pProvider = new MaS2pProvider(FrequencyUnits.GHz);
+			var s2pProvider = new MaS2pProvider(FrequencyUnits.GHz);
 
 			IEnumerable<Sample> expectedResult = new Sample[]
 			{
@@ -226,7 +217,7 @@ namespace normalizerS2Pfiles.Tests
 				S22MagOrRe = -45.9995, S22AngOrIm = 177.616 }
 			};
 
-			var actualResult = dbS2pProvider.GetSamples(new string[]
+			var actualResult = s2pProvider.GetSamples(new string[]
 			{
 				"# GHZ S MA R 50",
 				"5                     0.00504811         175.958         0.991456         87.0624         0.991455         87.0624       0.00504996         178.669  ",
@@ -234,16 +225,26 @@ namespace normalizerS2Pfiles.Tests
 				"5.02                  0.00501022         174.865         0.991443         85.9702         0.991442         85.9702       0.00501215         177.616  ",
 			});
 
+			double e = 0.001;
+
 			for (int i = 0; i < 3; i++)
 			{
-				Assert.AreEqual(expectedResult.Skip(i).First(), actualResult.Skip(i).First());
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().Freq - actualResult.Skip(i).First().Freq) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S11MagOrRe - actualResult.Skip(i).First().S11MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S11AngOrIm - actualResult.Skip(i).First().S11AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S12MagOrRe - actualResult.Skip(i).First().S12MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S12AngOrIm - actualResult.Skip(i).First().S12AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S21MagOrRe - actualResult.Skip(i).First().S21MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S21AngOrIm - actualResult.Skip(i).First().S21AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S22MagOrRe - actualResult.Skip(i).First().S22MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S22AngOrIm - actualResult.Skip(i).First().S22AngOrIm) < e);
 			}
 		}
 		
 		[Test]
 		public void GetSamplesRiTest()
 		{
-			var dbS2pProvider = new RiS2pProvider(FrequencyUnits.GHz);
+			var s2pProvider = new RiS2pProvider(FrequencyUnits.GHz);
 
 			IEnumerable<Sample> expectedResult = new Sample[]
 			{
@@ -266,7 +267,7 @@ namespace normalizerS2Pfiles.Tests
 				S22MagOrRe = -45.9995, S22AngOrIm = 177.616 }
 			};
 
-			var actualResult = dbS2pProvider.GetSamples(new string[]
+			var actualResult = s2pProvider.GetSamples(new string[]
 			{
 				"# GHZ S RI R 50",
 				"5                    -0.00503556      0.00035585        0.0508101        0.990153          0.05081        0.990152       -0.0050486       0.0001173  ",
@@ -274,9 +275,19 @@ namespace normalizerS2Pfiles.Tests
 				"5.02                 -0.00499011     0.000448436        0.0696738        0.988992        0.0696738         0.98899      -0.00500782     0.000208483  ",
 			});
 
+			double e = 0.001;
+
 			for (int i = 0; i < 3; i++)
 			{
-				Assert.AreEqual(expectedResult.Skip(i).First(), actualResult.Skip(i).First());
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().Freq - actualResult.Skip(i).First().Freq) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S11MagOrRe - actualResult.Skip(i).First().S11MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S11AngOrIm - actualResult.Skip(i).First().S11AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S12MagOrRe - actualResult.Skip(i).First().S12MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S12AngOrIm - actualResult.Skip(i).First().S12AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S21MagOrRe - actualResult.Skip(i).First().S21MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S21AngOrIm - actualResult.Skip(i).First().S21AngOrIm) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S22MagOrRe - actualResult.Skip(i).First().S22MagOrRe) < e);
+				Assert.IsTrue(Math.Abs(expectedResult.Skip(i).First().S22AngOrIm - actualResult.Skip(i).First().S22AngOrIm) < e);
 			}
 		}
 	}
