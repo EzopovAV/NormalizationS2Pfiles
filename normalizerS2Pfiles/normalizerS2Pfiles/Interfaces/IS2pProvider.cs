@@ -2,7 +2,7 @@
 
 namespace normalizerS2Pfiles.Interfaces
 {
-	public interface IS2pProvider
+	public interface IS2PProvider
 	{
 		/// <summary>
 		/// Return all samples normalized to format # Hz S dB R 50

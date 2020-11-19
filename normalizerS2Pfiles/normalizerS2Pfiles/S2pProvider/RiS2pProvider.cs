@@ -1,11 +1,11 @@
 ﻿using System;
 using normalizerS2Pfiles.Enums;
 
-namespace normalizerS2Pfiles
+namespace normalizerS2Pfiles.S2pProvider
 {
-	public class RiS2pProvider : BaseS2pProvider
+	public class RiS2PProvider : BaseS2PProvider
 	{
-		public RiS2pProvider(FrequencyUnits frequencyUnits)
+		public RiS2PProvider(FrequencyUnits frequencyUnits)
 			: base(frequencyUnits)
 		{
 		}

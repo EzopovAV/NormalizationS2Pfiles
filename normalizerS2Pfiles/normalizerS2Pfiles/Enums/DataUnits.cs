@@ -2,8 +2,8 @@
 {
 	public enum DataUnits
 	{
-		DB,
-		MA,
-		RI,
+		Db,
+		Ma,
+		Ri,
 	}
 }

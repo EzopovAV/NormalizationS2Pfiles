@@ -4,34 +4,34 @@ using System.IO;
 
 namespace normalizerS2Pfiles
 {
-	public class S2pFileManager
+	public class S2PFileManager
 	{
-		private readonly string _s2pFileName;
-		private readonly IS2pReader _s2pReader;
-		private readonly IS2pProviderFactory _s2pProviderFactory;
+		private readonly string _s2PFileName;
+		private readonly IS2PReader _s2PReader;
+		private readonly IS2PProviderFactory _s2PProviderFactory;
 
-		public S2pFileManager(string s2pFileName, IS2pReader s2pReader, IS2pProviderFactory s2pProviderFactory)
+		public S2PFileManager(string s2PFileName, IS2PReader s2PReader, IS2PProviderFactory s2PProviderFactory)
 		{
-			if (string.IsNullOrEmpty(s2pFileName))
+			if (string.IsNullOrEmpty(s2PFileName))
 			{
 				throw new ArgumentException("s2pFileName can't be null or empty");
 			}
-			_s2pFileName = s2pFileName;
+			_s2PFileName = s2PFileName;
 
-			_s2pReader = s2pReader ?? throw new ArgumentNullException(nameof(s2pReader));
+			_s2PReader = s2PReader ?? throw new ArgumentNullException(nameof(s2PReader));
 
-			_s2pProviderFactory = s2pProviderFactory ?? throw new ArgumentNullException(nameof(s2pProviderFactory));
+			_s2PProviderFactory = s2PProviderFactory ?? throw new ArgumentNullException(nameof(s2PProviderFactory));
 		}
 
 		public string NormalizeToFile(string destinationPath)
 		{
 			try
 			{
-				string[] source = File.ReadAllLines(_s2pFileName);
+				string[] source = File.ReadAllLines(_s2PFileName);
 
-				var format = _s2pReader.GetFormat(source);
+				var format = _s2PReader.GetFormat(source);
 
-				var provider = _s2pProviderFactory.GetS2pProvider(format);
+				var provider = _s2PProviderFactory.GetS2PProvider(format);
 
 				string[] result = provider.GetNormalizedS2P(source);
 
@@ -40,7 +40,7 @@ namespace normalizerS2Pfiles
 			catch (Exception e)
 			{
 
-				return "Error:/n" + e.ToString();
+				return "Error:/n" + e;
 			}
 
 			return "File normalized successfully.";

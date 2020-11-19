@@ -3,7 +3,7 @@
 	public enum FrequencyUnits
 	{
 		Hz,
-		kHz,
+		KHz,
 		MHz,
 		GHz,
 	}

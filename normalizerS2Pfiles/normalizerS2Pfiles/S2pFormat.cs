@@ -2,12 +2,12 @@
 
 namespace normalizerS2Pfiles
 {
-	public class S2pFormat
+	public class S2PFormat
 	{
 		public FrequencyUnits FrequencyUnits;
 		public DataUnits DataUnits;
 
-		public bool Equals(S2pFormat other)
+		public bool Equals(S2PFormat other)
 		{
 			if (ReferenceEquals(this, other))
 			{
@@ -24,7 +24,7 @@ namespace normalizerS2Pfiles
 
 		public override bool Equals(object obj)
 		{
-			S2pFormat s2PFormat = obj as S2pFormat;
+			S2PFormat s2PFormat = obj as S2PFormat;
 			return Equals(s2PFormat);
 		}
 

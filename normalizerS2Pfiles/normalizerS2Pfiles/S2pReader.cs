@@ -5,18 +5,18 @@ using System.Linq;
 
 namespace normalizerS2Pfiles
 {
-	public class S2pReader : IS2pReader
+	public class S2PReader : IS2PReader
 	{
-		public S2pFormat GetFormat(string[] source)
+		public S2PFormat GetFormat(string[] source)
 		{
-			var s2pFormat = new S2pFormat();
+			var s2PFormat = new S2PFormat();
 
 			var formatString = GetFormatString(source);
 
-			s2pFormat.FrequencyUnits = GetFreqUnit(formatString);
-			s2pFormat.DataUnits = GetDataUnit(formatString);
+			s2PFormat.FrequencyUnits = GetFreqUnit(formatString);
+			s2PFormat.DataUnits = GetDataUnit(formatString);
 
-			return s2pFormat;
+			return s2PFormat;
 		}
 		private string GetFormatString(string[] source)
 		{
@@ -35,7 +35,7 @@ namespace normalizerS2Pfiles
 
 		private FrequencyUnits GetFreqUnit(string formatString)
 		{
-			var frequencyUnit = formatString.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)[1];
+			var frequencyUnit = formatString.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)[1];
 
 			foreach (FrequencyUnits unit in Enum.GetValues(typeof(FrequencyUnits)))
 			{
@@ -50,7 +50,7 @@ namespace normalizerS2Pfiles
 
 		private DataUnits GetDataUnit(string formatString)
 		{
-			var dataUnit = formatString.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)[3];
+			var dataUnit = formatString.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)[3];
 
 			foreach (DataUnits unit in Enum.GetValues(typeof(DataUnits)))
 			{

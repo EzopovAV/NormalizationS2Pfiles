@@ -1,10 +1,10 @@
 ﻿using normalizerS2Pfiles.Enums;
 
-namespace normalizerS2Pfiles
+namespace normalizerS2Pfiles.S2pProvider
 {
-	public class DbS2pProvider : BaseS2pProvider
+	public class DbS2PProvider : BaseS2PProvider
 	{
-		public DbS2pProvider(FrequencyUnits frequencyUnits)
+		public DbS2PProvider(FrequencyUnits frequencyUnits)
 			:base(frequencyUnits)
 		{
 		}

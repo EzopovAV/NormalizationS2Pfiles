@@ -1,18 +1,18 @@
-﻿using normalizerS2Pfiles.Enums;
-using normalizerS2Pfiles.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Globalization;
+using normalizerS2Pfiles.Enums;
+using normalizerS2Pfiles.Interfaces;
 
-namespace normalizerS2Pfiles
+namespace normalizerS2Pfiles.S2pProvider
 {
-	public abstract class BaseS2pProvider : IS2pProvider
+	public abstract class BaseS2PProvider : IS2PProvider
 	{
 		private readonly FrequencyUnits _frequencyUnits;
 
-		public BaseS2pProvider(FrequencyUnits frequencyUnits)
+		public BaseS2PProvider(FrequencyUnits frequencyUnits)
 		{
 			_frequencyUnits = frequencyUnits;
 		}
@@ -40,7 +40,7 @@ namespace normalizerS2Pfiles
 
 			foreach (var item in samples)
 			{
-				result[i] = item.Freq.ToString() + "\t" +
+				result[i] = item.Freq + "\t" +
 					item.S11MagOrRe.ToString("E") + "\t" +
 					item.S11AngOrIm.ToString("E") + "\t" +
 					item.S12MagOrRe.ToString("E") + "\t" +
@@ -81,7 +81,7 @@ namespace normalizerS2Pfiles
 			{
 				Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
 
-				sampleString = sampleStrings[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+				sampleString = sampleStrings[i].Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
 				try
 				{
@@ -106,14 +106,14 @@ namespace normalizerS2Pfiles
 
 		private Sample[] ConvertFreqToHz(FrequencyUnits frequencyUnits, Sample[] samples)
 		{
-			Func<double, double> func = f => f;
+			Func<double, double> func;
 
 			switch (frequencyUnits)
 			{
 				case FrequencyUnits.Hz:
 					return samples;
 
-				case FrequencyUnits.kHz:
+				case FrequencyUnits.KHz:
 					func = f => f * 1E3;
 					break;
 

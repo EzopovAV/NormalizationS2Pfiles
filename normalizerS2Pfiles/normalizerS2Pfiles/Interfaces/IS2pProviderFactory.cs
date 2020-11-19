@@ -1,7 +1,7 @@
 ﻿namespace normalizerS2Pfiles.Interfaces
 {
-	public interface IS2pProviderFactory
+	public interface IS2PProviderFactory
 	{
-		IS2pProvider GetS2pProvider(S2pFormat format);
+		IS2PProvider GetS2PProvider(S2PFormat format);
 	}
 }
