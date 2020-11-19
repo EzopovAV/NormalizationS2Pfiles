@@ -43,21 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="S2pProvider\BaseS2pProvider.cs" />
-    <Compile Include="S2pProvider\DbS2pProvider.cs" />
+    <Compile Include="S2pProvider\BaseS2PProvider.cs" />
+    <Compile Include="S2pProvider\DbS2PProvider.cs" />
     <Compile Include="Enums\DataUnits.cs" />
     <Compile Include="Enums\FrequencyUnits.cs" />
-    <Compile Include="Interfaces\IS2pProvider.cs" />
-    <Compile Include="Interfaces\IS2pProviderFactory.cs" />
-    <Compile Include="Interfaces\IS2pReader.cs" />
-    <Compile Include="S2pProvider\MaS2pProvider.cs" />
+    <Compile Include="Interfaces\IS2PProvider.cs" />
+    <Compile Include="Interfaces\IS2PProviderFactory.cs" />
+    <Compile Include="Interfaces\IS2PReader.cs" />
+    <Compile Include="S2pProvider\MaS2PProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="S2pProvider\RiS2pProvider.cs" />
-    <Compile Include="S2pFileManager.cs" />
-    <Compile Include="S2pFormat.cs" />
-    <Compile Include="S2pProviderFactory.cs" />
-    <Compile Include="S2pReader.cs" />
+    <Compile Include="S2pProvider\RiS2PProvider.cs" />
+    <Compile Include="S2PFileManager.cs" />
+    <Compile Include="S2PFormat.cs" />
+    <Compile Include="S2PProviderFactory.cs" />
+    <Compile Include="S2PReader.cs" />
     <Compile Include="Sample.cs" />
   </ItemGroup>
   <ItemGroup>

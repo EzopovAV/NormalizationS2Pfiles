@@ -47,9 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="S2pProviderFactoryTest.cs" />
-    <Compile Include="DbS2pProviderTest.cs" />
-    <Compile Include="S2pReaderTest.cs" />
+    <Compile Include="S2PProviderFactoryTest.cs" />
+    <Compile Include="S2PProviderTests.cs" />
+    <Compile Include="S2PReaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
